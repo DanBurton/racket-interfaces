@@ -38,8 +38,9 @@
          (syntax-parameterize 
           ([#,(interface-info-static (syntax-local-value #'interface))
             (make-rename-transformer #'instance-id)])
-          (parameterize ([#,(interface-info-param (syntax-local-value #'interface))
-                          instance-id])
+          (parameterize
+              ([#,(interface-info-param (syntax-local-value #'interface))
+                instance-id])
             . body))))]))
 
 (define-syntax (generalized stx)
@@ -52,41 +53,7 @@
            #'#,(interface-info-dyn (syntax-local-value #'interface)))])
         . body))]))
 
-;; XXX provide for syntax?
 (provide
  define-interface
  with-generics
  generalized)
-
-;; XXX move this example to monad.rkt
-(require racket/list)
-
-(define-interface monad
-  monad-dict
-  (bind return))
-
-(define list-monad
-  (monad-dict
-   (λ (m f) (append-map f m))
-   (λ (a) (list a))))
-
-(define maybe-monad
-  (monad-dict
-   (λ (m f) (and m (f m)))
-   (λ (x) x)))
-
-(with-generics
- monad maybe-monad
- (define (just x) 
-   (return x))
- (define (fmap f xs)
-   (generalized monad
-                (bind xs
-                      (λ (x) (return (f x))))))
- (print (fmap add1 4))
- (define (list-add-one xs)
-   (with-generics
-    monad list-monad
-    (fmap add1 (just xs))))
- (list-add-one '(1 2 3)))
-

@@ -1,8 +1,6 @@
-#lang racket
-
-;; XXX require for syntax?
-;; error: syntax-parameterize: not bound as a syntax parameter in: static-id
-(require "interface.rkt")
+#lang racket/base
+(require racket/list
+         "interface.rkt")
 
 (define-interface monad
   monad-dict
