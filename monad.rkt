@@ -3,18 +3,19 @@
          "interface.rkt")
 
 (define-interface monad
-  monad-dict
   (bind return))
 
-(define list-monad
-  (monad-dict
-   (λ (m f) (append-map f m))
-   (λ (a) (list a))))
+(define-instance monad list-monad
+  (define (bind m f)
+    (append-map f m))
+  (define (return a)
+    (list a)))
 
-(define maybe-monad
-  (monad-dict
-   (λ (m f) (and m (f m)))
-   (λ (x) x)))
+(define-instance monad maybe-monad
+  (define (bind m f)
+    (and m (f m)))
+  (define (return a)
+    a))
 
 (with-generics
  monad maybe-monad
