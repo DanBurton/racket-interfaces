@@ -49,7 +49,7 @@
                        (dict-member static-id))]))))
           ...)))]))
 
-(define-syntax (with-generics stx)
+(define-syntax (with-instance stx)
   (syntax-parse stx
     [(_ interface instance:id . body:expr)
      #:declare interface (static interface-info? "interface")
@@ -63,7 +63,7 @@
                  instance-id])
              . body))))]))
 
-(define-syntax (generalized stx)
+(define-syntax (with-interface stx)
   (syntax-parse stx
     [(_ interface . body:expr)
      #:declare interface (static interface-info? "interface")
@@ -95,5 +95,5 @@
 (provide
  define-interface
  define-instance
- with-generics
- generalized)
+ with-instance
+ with-interface)

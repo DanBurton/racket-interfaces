@@ -28,24 +28,25 @@
   (define (mplus x y) (or x y))
   (define mzero #f))
 
-(with-generics
+(with-instance
  monad maybe-monad
  (define (just x)
    (return x))
  (define (fmap f xs)
-   (generalized monad
-                (bind xs
-                      (λ (x) (return (f x))))))
+   (with-interface
+    monad
+    (bind xs
+          (λ (x) (return (f x))))))
  (print (fmap add1 4))
  (define (list-add-one xs)
-   (with-generics
+   (with-instance
     monad list-monad
     (fmap add1 (just xs))))
  (list-add-one '(1 2 3)))
 
-(with-generics
+(with-instance
  monad maybe-monad
- (with-generics
+ (with-instance
   monad-plus maybe-monad-plus
   (mplus (mplus mzero (return 5))
          mzero)))
