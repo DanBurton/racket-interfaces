@@ -1,5 +1,6 @@
 #lang racket/base
 (require racket/stxparam
+         racket/splicing
          (for-syntax syntax/parse
                      racket/base
                      racket/function
@@ -43,7 +44,7 @@
                    stx)]
                  [(id . e)
                   (syntax/loc stx
-                       ((dict-member static-id) . e))]
+                    ((dict-member static-id) . e))]
                  [id (identifier? #'id)
                      (syntax/loc stx
                        (dict-member static-id))]))))
@@ -74,26 +75,32 @@
               #'#,(interface-info-dyn (attribute interface.value)))])
          . body))]))
 
-(define-syntax (define-instance stx)
+(define-syntax (make-instance stx)
   (syntax-parse stx
-    [(_ interface instance:id body:expr ...)
+    [(_ interface . body:expr)
      #:declare interface (static interface-info? "interface")
      (with-syntax
          ([dict
            (interface-info-dict (attribute interface.value))]
           [(member ...)
            (map
-            (curry replace-context #'instance)
+            (curry replace-context #'body)
             (syntax->list
              (interface-info-members (attribute interface.value))))])
        (syntax/loc stx
-         (define instance
-           (let ()
-             body ...
-             (dict member ...)))))]))
+         (let ()
+           (splicing-let () . body)
+           (dict member ...))))]))
+
+(define-syntax (define-instance stx)
+  (syntax-parse stx
+    [(_ interface instance:id . body:expr)
+     (syntax/loc stx
+       (define instance (make-instance interface . body)))]))
 
 (provide
  define-interface
+ make-instance
  define-instance
  with-instance
  with-interface)

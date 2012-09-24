@@ -63,9 +63,9 @@
 
   (define l
     (for/list ([i (in-range 5)])
-      (define-instance foo i-foo
-        (define bar i))
-      i-foo))
+      (make-instance 
+       foo
+       (define bar i))))
 
   (for ([i (in-list l)])
     (with-instance 
