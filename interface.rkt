@@ -32,8 +32,21 @@
 
           (struct dict (member ...))
 
-          (define-syntax-rule (member . e)
-            ((dict-member static-id) . e))
+          (define-syntax member
+            (make-set!-transformer
+             (lambda (stx)
+               (syntax-case stx (set!)
+                 [(set! id v)
+                  (raise-syntax-error
+                   'member
+                   "Cannot rebind interface members"
+                   stx)]
+                 [(id . e)
+                  (syntax/loc stx
+                       ((dict-member static-id) . e))]
+                 [id (identifier? #'id)
+                     (syntax/loc stx
+                       (dict-member static-id))]))))
           ...)))]))
 
 (define-syntax (with-generics stx)

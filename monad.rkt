@@ -17,9 +17,20 @@
   (define (return a)
     a))
 
+(define-interface monad-plus
+  (mplus mzero))
+
+(define-instance monad-plus list-monad-plus
+  (define mplus append)
+  (define mzero empty))
+
+(define-instance monad-plus maybe-monad-plus
+  (define (mplus x y) (or x y))
+  (define mzero #f))
+
 (with-generics
  monad maybe-monad
- (define (just x) 
+ (define (just x)
    (return x))
  (define (fmap f xs)
    (generalized monad
@@ -32,3 +43,9 @@
     (fmap add1 (just xs))))
  (list-add-one '(1 2 3)))
 
+(with-generics
+ monad maybe-monad
+ (with-generics
+  monad-plus maybe-monad-plus
+  (mplus (mplus mzero (return 5))
+         mzero)))
