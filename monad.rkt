@@ -52,3 +52,22 @@
   monad-plus maybe-monad-plus
   (mplus (mplus mzero (return 5))
          mzero)))
+
+;; First-class instances
+(let ()
+  (define-interface foo
+    (bar))
+
+  (define-instance foo five-foo
+    (define bar 5))
+
+  (define l
+    (for/list ([i (in-range 5)])
+      (define-instance foo i-foo
+        (define bar i))
+      i-foo))
+
+  (for ([i (in-list l)])
+    (with-instance 
+     foo i
+     (displayln bar))))
