@@ -92,11 +92,8 @@
            (splicing-let () . body)
            (dict member ...))))]))
 
-(define-syntax (define-instance stx)
-  (syntax-parse stx
-    [(_ interface instance:id . body:expr)
-     (syntax/loc stx
-       (define instance (make-instance interface . body)))]))
+(define-syntax-rule (define-instance interface instance . body)
+  (define instance (make-instance interface . body)))
 
 (provide
  define-interface
