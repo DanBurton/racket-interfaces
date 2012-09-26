@@ -14,7 +14,8 @@
   (syntax-parse stx
     [(_ interface:id (member:id ...))
      (with-syntax*
-      ([dict (generate-temporary #'interface)]
+      ([(dynamic-id dynamic-id-param static-id dict)
+        (generate-temporaries #'(interface interface interface interface) )]
        [(dict-member ...)
         (for/list ([mid (in-list (syntax->list #'(member ...)))])
           (format-id #'dict "~a-~a" #'dict mid))])
@@ -64,6 +65,21 @@
                  instance-id])
              . body))))]))
 
+(define-syntax with-instances
+  (syntax-rules ()
+    [(_ () . body)
+     (splicing-let () . body)]
+    [(_ ([interface0 instance0]
+         [interfacei instancei]
+         ...)
+        . body)
+     (with-instance
+      interface0 instance0
+      (with-instances
+       ([interfacei instancei]
+        ...)
+       . body))]))
+
 (define-syntax (with-interface stx)
   (syntax-parse stx
     [(_ interface . body:expr)
@@ -100,4 +116,5 @@
  make-instance
  define-instance
  with-instance
+ with-instances
  with-interface)
