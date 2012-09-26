@@ -108,10 +108,16 @@
             (curry replace-context #'body)
             (syntax->list
              (interface-info-members (attribute interface.value))))])
-       (syntax/loc stx
+       (quasisyntax/loc stx
          (let ()
            (splicing-let () . body)
-           (dict member ...))))]))
+           (syntax-parameterize
+            ([#,(interface-info-static (attribute interface.value))
+              (λ (stx)
+                (raise-syntax-error 
+                 'make-instance "Incomplete instance definition"
+                 #'body))])
+           (dict member ...)))))]))
 
 (define-syntax-rule (define-instance interface instance . body)
   (define instance (make-instance interface . body)))
