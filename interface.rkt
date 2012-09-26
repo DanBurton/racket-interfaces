@@ -21,9 +21,10 @@
           (format-id #'dict "~a-~a" #'dict mid))])
       (syntax/loc stx
         (begin
-          (define dynamic-id-param (make-parameter #f))
+          
           (define-syntax (dynamic-id stx)
-            #'(dynamic-id-param))
+            #'(or (dynamic-id-param)
+                  (error 'interface "Not dynamically available")))
 
           (define-syntax-parameter static-id
             (make-rename-transformer #'dynamic-id))
@@ -33,6 +34,10 @@
                             #'(member ...)))
 
           (struct dict (member ...))
+          
+          (define dynamic-id-param 
+            (make-parameter
+             #f))
 
           (define-syntax member
             (make-set!-transformer
