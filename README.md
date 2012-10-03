@@ -12,3 +12,4 @@ TODO
 * Super-interfaces
 * More examples
 * Separate first-class and first-order instances (for efficiency)
+* Contracts in interfaces
