@@ -58,7 +58,7 @@
 
 (define-syntax (with-instance stx)
   (syntax-parse stx
-    [(_ interface instance:id . body:expr)
+    [(_ interface instance:expr . body:expr)
      #:declare interface (static interface-info? "interface")
      (quasisyntax/loc stx
        (let ([instance-id instance])
