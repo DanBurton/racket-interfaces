@@ -1,32 +1,40 @@
 #lang racket/base
-
-(require "interface.rkt")
+(require racket/port
+         "interface.rkt")
 
 (define-interface showable
   (show))
 
 (define-interface readable
-  (my-read))
+  (tell))
 
 (define-instance showable show-any
   (define (show x)
-    (format "~s" x)))
+    (with-output-to-string 
+     (λ () (write x)))))
 
 (define-instance readable read-any
-  (define (my-read str)
-    (read (open-input-string str))))
+  (define (tell str)
+    (with-input-from-string
+     str read)))
 
 (struct foo (asdf) #:prefab)
 
 #;(define-instance readable read-foo
-    (define (my-read str)
-      (match (read (open-input-string str))
-        )))
+  (define (my-read str)
+    (match (read (open-input-string str)))))
 
-#;(with-instances ([readable read-any])
-                  (foo-asdf (my-read "#s(foo 3)")))
+(require rackunit)
 
-(with-instances 
- ([readable read-any]
-  [showable show-any])
- (foo-asdf (my-read (show (foo 3)))))
+(check-equal?
+ (with-instances
+  ([readable read-any])
+  (foo-asdf (tell "#s(foo 3)")))
+ 3)
+
+(check-equal?
+ (with-instances 
+  ([readable read-any]
+   [showable show-any])
+  (foo-asdf (tell (show (foo 3)))))
+ 3)
