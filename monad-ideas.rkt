@@ -53,11 +53,6 @@
             [(some (some x)) (some x)]
             [_ (none)])))
 
-(define (pass)
-  (with-interface
-   monad
-   (return (void))))
-
 
 (define-syntax-rule (do-with m action ...)
   (with-instance monad m
