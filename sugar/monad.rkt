@@ -1,19 +1,12 @@
 #lang racket
 
 (require
- "interface.rkt")
+ "../interface.rkt"
+ "../interfaces/monad.rkt")
 
-;; XXX would interface-out be valuable?
-;; (provide (interface-out monad))
 (provide
- monad
- bind
- return
  do
  do-with-monad)
-
-(define-interface monad
-  (bind return))
 
 (require (for-syntax syntax/parse))
 (define-syntax (<- stx)
