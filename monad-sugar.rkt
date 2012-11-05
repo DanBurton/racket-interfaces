@@ -9,19 +9,11 @@
  monad
  bind
  return
- pass
  do
  do-with-monad)
 
 (define-interface monad
   (bind return))
-
-(define pass
-  #f
-  ;; XXX "not dynamically available"
-  #;(with-interface
-   monad
-   (return (void))))
 
 (require (for-syntax syntax/parse))
 (define-syntax (<- stx)
