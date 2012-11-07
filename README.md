@@ -3,13 +3,30 @@ racket-interfaces
 
 Typeclass-esque generics for Racket
 
-TODO
-====
+A work in progress.
 
-* Default implementations
-* Good error messages
-* Macros in instances
-* Super-interfaces
-* More examples
-* Separate first-class and first-order instances (for efficiency)
-* Contracts in interfaces
+Priorities
+==========
+
+Tier 1:  
+Truly first class instances  
+Not "too dynamic"
+
+Tier 2:  
+"define" syntax  
+allow supporting defines
+
+Tier 3:  
+super/sub-interfaces  
+ad-hoc interface extension  
+macro friendly  
+nice error messages
+
+Tier 4:  
+contracts  
+quick-checkables  
+typed/racket friendly  
+speed  
+efficiency (first-order instances)  
+integration with current generics system  
+more examples
